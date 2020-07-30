@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="edit-entry">
+    <h2>Edit Entry</h2>
+    <form method='POST' action=''>
+        {% for field in form %}
+            {% if field.errors %}
+                {% for error in field.errors %}
+                    <div class="notification error">{{ error }}</div>
+                {% endfor %}
+            {% endif %}
+            {{ field.label() }}
+
+            {% if field.name == 'title' %}
+                {{ field(value=post.title)}}
+            {% elif field.name == 'date' %}
+                {{ field(value=post.timestamp.date().strftime("%d/%m/%Y")) }}
+            {% elif field.name == 'timespent' %}
+                {{ field(value=post.timespent) }}
+            {% elif field.name == 'content' %}
+                {% set f = field.process_data(post.content) %} 
+                <!-- https://stackoverflow.com/questions/5117479/wtforms-how-to-prepopulate-a-textarea-field -->
+                {{ field() }}
+            {% elif field.name == 'resources' %}
+                {% set f = field.process_data(post.resources) %}
+                {{ field() }}
+            {% endif %}
+           
+        {% endfor %}
+        <button type="submit" id="submit" class="button">Publish Entry!</button>
+        <a href="{{ url_for('index') }}" class="button button-secondary">Cancel</a>
+    </form>
+</div>
+
+{% endblock %}
